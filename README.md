@@ -33,7 +33,7 @@ Since the web scraper is so important for early experimentation and figuring out
 
 Once these items are finished and conversing nicely, we should begin research on [discord.py](https://github.com/Rapptz/discord.py) for the implementation of the bot.
 
-After the bot has some good progress on it, we can look to start wrapping up the integration by constructing the server application, which will likely amount to a shell script and some additional simple python code. We can also think about giving the bot a its own shell commands with the [cmd module.](https://docs.python.org/3/library/cmd.html)
+After the bot has some good progress on it, we can look to start wrapping up the integration by constructing the server application, which will likely amount to a shell script and some additional simple python code. We can also think about giving the bot its own shell commands with the [cmd module.](https://docs.python.org/3/library/cmd.html)
 
 ## Further work
 
