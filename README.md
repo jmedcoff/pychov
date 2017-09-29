@@ -1,5 +1,7 @@
 # Pychov
 
+*Py(thon)(4)ch(an)(Mark)ov*
+
 Discord bot written in python for automated humorous (and generally useless but still fun) text generation.
 
 ## Structure
@@ -24,7 +26,7 @@ Integration with discord's bot api. Can also wait until later in the development
 
 ### Text generator
 
-Machine learning or Markov chain text generation algo goes here. We need to figure out what to use: markov chain, tensorflow, etc. Other important question os how we decide how long a generated string should be. How do we specify this? Can we specify this on the fly through the discord bot?
+Machine learning or Markov chain text generation algo goes here. We need to figure out what to use: markov chain, tensorflow, etc. Other important question is how we decide how long a generated string should be. How do we specify this? Can we specify this on the fly through the discord bot?
 
 
 ## Stages of development
