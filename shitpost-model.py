@@ -18,15 +18,15 @@ class ShitpostModel:
         self.nchars = len(text)
         self.nvocab = len(self.chars)
 
-        self.slength = 100
+        self.slength = 20
         self.datax = []
         self.datay = []
 
         for i in range(0, self.nchars - self.slength, 1):
             seq_in = text[i:i + self.slength]
             seq_out = text[i + self.slength]
-            self.datax.append([ord(char) for char in seq_in])
-            self.datay.append([ord(seq_out)])
+            self.datax.append([self.char_to_int[char] for char in seq_in])
+            self.datay.append([self.char_to_int[seq_out]])
 
         self.npatterns = len(self.datax)
 
@@ -35,8 +35,9 @@ class ShitpostModel:
         self.Y = np_utils.to_categorical(self.datay)
 
         self.model = Sequential()
-        self.model.add(LSTM(256, input_shape=(self.X.shape[1], self.X.shape[2])))
+        self.model.add(LSTM(256, input_shape=(self.X.shape[1], self.X.shape[2]), return_sequences=True))
         self.model.add(Dropout(0.2))
+        self.model.add(LSTM(256))
         self.model.add(Dense(self.Y.shape[1], activation='softmax'))
         self.model.compile(loss='categorical_crossentropy', optimizer='adam')
 
@@ -44,13 +45,13 @@ class ShitpostModel:
         self.checkpoint = ModelCheckpoint(self.filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
         self.callbacklist = [self.checkpoint]
 
-        self.model.fit(self.X, self.Y, epochs=20, batch_size=128, callbacks=self.callbacklist)
+        self.model.fit(self.X, self.Y, epochs=1, batch_size=128, callbacks=self.callbacklist)
 
         int_to_char = dict((i,c) for i, c in enumerate(self.chars))
 
         self.start = numpy.random.randint(0, len(self.datax) - 1)
-
         self.pattern = self.datax[self.start]
+        print("Seed: ", "".join([int_to_char[value] for value in self.pattern]))
 
         output_size = 1000
         for i in range(output_size):
