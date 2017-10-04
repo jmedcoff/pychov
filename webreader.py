@@ -7,5 +7,5 @@ class WebReader(ABC):
 
     @abstractmethod
     def parse(self):
-        """Parse the site and return the string of input text (gets fed into the ML)"""
+        """Parse the site and return the string of input text (gets fed into the model)"""
         pass

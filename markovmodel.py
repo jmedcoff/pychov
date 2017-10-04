@@ -1,21 +1,22 @@
 from re import sub
 from random import randint, choice
 
+
 class MarkovModel:
     """This is the "model" based off of markov processes instead of machine learning."""
 
-    def __init__(self, filepath, length):
+    def __init__(self, file_path, length=4):
         """Open the input file and prep the word list for use"""
-        if filepath is None:
+        if file_path is None:
             Exception("Cannot initialize without an input file.")
 
         self.length = length
-        with open(filepath, 'r') as file:
+        with open(file_path, 'r') as file:
             lines = file.read().lower()
-            self.words = sub("[^\w]", " ", lines)
+            self.words = sub("[^\w]", " ", lines).split()
         self.num_words = len(self.words)
         self.database = {}
-
+        self.__build_database()
 
     def __build_tuples(self):
         """Build the tuples from the word list for the database"""
@@ -27,12 +28,12 @@ class MarkovModel:
         # at num_words + 1 - length
         for i in range(self.num_words - (self.length - 1)):
             # generators here because we can hold off on processing until we build the database
-            yield tuple(self.words[j] for j in range(self.length))
+            yield tuple(self.words[i+j] for j in range(self.length))
 
-    def __build_database(self, length):
+    def __build_database(self):
         """Build the database itself."""
-        for tup in self.__build_tuples(length):
-            key = tup[0:length-1]
+        for tup in self.__build_tuples():
+            key = tup[0:self.length-1]
             if key in self.database:
                 self.database[key].append(tup[-1])
             else:
@@ -47,9 +48,12 @@ class MarkovModel:
         w = [x for x in self.words[seed:seed+self.length]]
         out = []
         for i in range(size):
-            next_word = self.database[w].choice()
+            key = tuple(w)
+            if key in self.database:
+                next_word = choice(self.database[key])
+            else:
+                next_word = choice(self.words)
             out.append(w[0])
             del w[0]
             w.append(next_word)
-        return "".join(out)
-
+        return " ".join(out)
