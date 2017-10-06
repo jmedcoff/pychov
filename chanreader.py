@@ -14,8 +14,8 @@ class ChanReader(WebReader):
 
     url_boards = 'https://a.4cdn.org/boards.json'
 
-    def __init__(self):
-        self.url_string = self.url_string_format.format(3)
+    def __init__(self, board):
+        self.url_string = self.url_string_format.format(board)
 
     def list_boards(self):
         boards = requests.get(self.url_boards).json()['boards']

@@ -5,10 +5,6 @@ from re import sub
 
 filepath = "./alice.txt"
 
-with open(filepath, 'r') as file:
-    lines = file.read().lower()
-    print(sub("[^\w]", " ", lines))
-
-mkv = MarkovModel(filepath, 5)
+mkv = MarkovModel(filepath)
 
 print(mkv.generate(15))

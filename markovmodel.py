@@ -6,7 +6,13 @@ class MarkovModel:
     """This is the "model" based off of markov processes instead of machine learning."""
 
     def __init__(self, file_path, length=4):
-        """Open the input file and prep the word list for use"""
+        self.length = None
+        self.words = None
+        self.num_words = None
+        self.database = None
+        self.load(file_path, length)
+
+    def load(self, file_path, length=4):
         if file_path is None:
             Exception("Cannot initialize without an input file.")
 
@@ -17,6 +23,7 @@ class MarkovModel:
         self.num_words = len(self.words)
         self.database = {}
         self.__build_database()
+
 
     def __build_tuples(self):
         """Build the tuples from the word list for the database"""
@@ -56,4 +63,10 @@ class MarkovModel:
             out.append(w[0])
             del w[0]
             w.append(next_word)
+            # Here we consider two words in our string, and use random choice
+            # to determine the next word. Add it to the output list, and trim
+            # the first word from w. Repeat. If we run into the case where we
+            # are looking at the last n words in our string, we just pick a
+            # new random word to pick up from. The grammatical impact should
+            # be minimal in the grand scheme of things.
         return " ".join(out)
