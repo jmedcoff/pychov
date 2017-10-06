@@ -4,6 +4,17 @@
 
 Discord bot written in python for automated humorous (and generally useless but still fun) text generation.
 
+## Commands
+
+All posts are made in the channel where the command was invoked.
+
+* !post - creates a generated post.
+* !add xyz - adds board /xyz/ to the text bank.
+* !clean xyz - empties the text bank and adds board /xyz/ to it.
+* !help - displays a succinct description of these commands.
+* !list - lists the boards used to construct the text bank.
+* !goodbot - easter egg command.
+
 ## Structure
 
 Given a bank of text accumulated by a web scraper, we would like to design a piece of software that will use the text bank as training to compose new text automatically. Ideally, we would like this to be based on randomized processes sufficiently such that a unique output will be produced almost every time the generating code is run.
