@@ -7,6 +7,7 @@ from chanreader import ChanReader
 
 file_path = "./textbank.txt"
 boards = ["a"]
+board_choices = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'o', 'pol', 'r9k', 's4s', 's', 'sci', 'x']
 
 reader = ChanReader(boards[0])
 client = discord.Client()
@@ -52,21 +53,29 @@ async def on_message(message):
     elif message.content.startswith('!add'):
         in_msg = message.content.split()
         inboard = in_msg[1].strip()
-        new_reader = ChanReader(inboard)
-        with open(file_path, 'a') as file:
-            file.write(new_reader.parse())
-        boards.append(inboard)
+        if inboard in board_choices:
+            new_reader = ChanReader(inboard)
+            with open(file_path, 'a') as file:
+                file.write(new_reader.parse())
+            boards.append(inboard)
+        else:
+            msg = "Board misspelled or not supported, baka"
+            client.send_message(message.channel, msg)
 
     # Scrape board of choice and clean write text to the bank. Format: "!clean pol"
     elif message.content.startswith('!clean'):
         in_msg = message.content.split()
         inboard = in_msg[1].strip()
-        new_reader = ChanReader(inboard)
-        boards.clear()
-        with open(file_path, 'w') as file:
-            file.write(new_reader.parse())
-        boards.append(inboard)
-        model.load(file_path)
+        if inboard in board_choices:
+            new_reader = ChanReader(inboard)
+            boards.clear()
+            with open(file_path, 'w') as file:
+                file.write(new_reader.parse())
+            boards.append(inboard)
+            model.load(file_path)
+        else:
+            msg = "Board misspelled or not supported, baka"
+            client.send_message(message.channel, msg)
 
     elif message.content.startswith('!list'):
         msg = ', '.join([str(i) for i in boards])
