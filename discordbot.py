@@ -4,22 +4,28 @@ from random import choice
 from markovmodel import MarkovModel
 from chanreader import ChanReader
 
+
 file_path = "./textbank.txt"
-boards = ["b"]
+boards = ["a"]
 
 reader = ChanReader(boards[0])
 client = discord.Client()
 model = MarkovModel(file_path)
+
+with open(file_path, 'w') as file:
+    file.write(reader.parse())
+
 
 @client.event
 async def on_ready():
     print("Logged in as")
     print(client.user.name)
     print(client.user.id)
-    print()
+    print("/{}/ board loaded.\n".format(boards[0]))
 
-help_msg = "If you would like for me to write a shitpost, just message !post in the desired channel. \n"
-help_msg += "To see this help dialog, type !help. For more information, see github.com/jorts1114/pychov."
+help_msg = "'!post' creates a shitpost. '!help' brings up this dialog. '!add xyz' adds board xyz "
+help_msg += "to the text bank. '!clean xyz' empties the bank and adds board xyz to the bank. "
+help_msg += "'!list' gives the boards currently in use. See github.com/jorts1114/pychov for details."
 
 meme_msg = ["Thank you. I'm doing my best. ;P", "Hmph. I AM the superior shitposter. >:)",
             "Your praise makes me feel validated. I wish I had a more meaningful purpose. :(",
@@ -44,25 +50,26 @@ async def on_message(message):
 
     # Scrape board of choice and add text to the bank. Format: "!add b"
     elif message.content.startswith('!add'):
-        inmsg = message.content.split()
-        inboard = inmsg[1].strip()
-        newreader = ChanReader(inboard)
+        in_msg = message.content.split()
+        inboard = in_msg[1].strip()
+        new_reader = ChanReader(inboard)
         with open(file_path, 'a') as file:
-            file.write(newreader.parse())
+            file.write(new_reader.parse())
         boards.append(inboard)
 
     # Scrape board of choice and clean write text to the bank. Format: "!clean pol"
     elif message.content.startswith('!clean'):
-        inmsg = message.content.split()
-        inboard = inmsg[1].strip()
-        newreader = ChanReader(inboard)
+        in_msg = message.content.split()
+        inboard = in_msg[1].strip()
+        new_reader = ChanReader(inboard)
         boards.clear()
         with open(file_path, 'w') as file:
-            file.write(newreader.parse())
+            file.write(new_reader.parse())
         boards.append(inboard)
+        model.load(file_path)
 
+    elif message.content.startswith('!list'):
+        msg = ', '.join([str(i) for i in boards])
+        await client.send_message(message.channel, msg)
 
-
-
-
-
+client.run('token')

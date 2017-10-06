@@ -35,20 +35,21 @@ class ChanReader(WebReader):
                     break
 
                 # Replace all quote/HTML references
-                post_text_original = html.parser.unescape(thread_posts[j]['com'])
-                post_text = post_text_original.replace("<br>", " ")
-                # re.sub(r"<br>", " ", post_text_original)
-                post_text = re.sub(r">>(\d)+", "", post_text)
-                post_text = re.sub(r"</?(a|span)(\s+[^>]+)>", "", post_text)
+                if 'com' in thread_posts[j]:
+                    post_text_original = html.parser.unescape(thread_posts[j]['com'])
+                    post_text = post_text_original.replace("<br>", " ")
+                    # re.sub(r"<br>", " ", post_text_original)
+                    post_text = re.sub(r">>(\d)+", "", post_text)
+                    post_text = re.sub(r"</?(a|span)|(\s+[^>]+)>", "", post_text)
+                    # Split the text into a list separated by spaces to define "words"
+                    words = post_text.split(' ')
 
-                # Split the text into a list separated by spaces to define "words"
-                words = post_text.split(' ')
-                for word in words:
-                    if overall_len > self.MAX_LENGTH:
-                        break
-
-                    ret_string += " " + word
-                    overall_len += 1
+                    for word in words:
+                        if overall_len > self.MAX_LENGTH:
+                            break
+                        ret_string += " " + word
+                        overall_len += 1
 
         return re.sub(r"\s+", " ", ret_string).strip()
         # Replace extra whitespace, tab chars, or newline chars
+
