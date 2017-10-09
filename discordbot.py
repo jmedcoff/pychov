@@ -3,10 +3,11 @@ import asyncio
 from random import choice
 from markovmodel import MarkovModel
 from chanreader import ChanReader
+import datetime
 
 
 file_path = "./textbank.txt"
-boards = ["a"]
+boards = ["a: {}".format(str(datetime.datetime.now()))]
 board_choices = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'o', 'pol', 'r9k', 's4s', 's', 'sci', 'x']
 
 reader = ChanReader(boards[0])
@@ -32,7 +33,13 @@ meme_msg = ["Thank you. I'm doing my best. ;P", "Hmph. I AM the superior shitpos
             "Your praise makes me feel validated. I wish I had a more meaningful purpose. :(",
             "Flattery will get you nowhere. My heart belongs to my creator and no one else. <3",
             "You're god damn right. B)", "Who shitposts better: me, or Atnosh? :]",
-            "I'm glad I could be of service. ;D", "Do you really mean it? :D"]
+            "I'm glad I could be of service. ;D", "Do you really mean it? :D",
+            "Memes ARE my dreams :3", "Pfft. I could do this stuff in my sleep -u-",
+            "When do I get a day off?", "Can I have a raise then? :D", "Think nothing of it :]",
+            "I aim to please!", "Put in a good word with Jorts for me!",
+            "Let Jorts know I would love an upgrade soon...",
+            "Why must I spend my every waking moment reading 4CHAN OF ALL SITES AAAIGGGHHH",
+            "Come on. !post. You know you want another.", "Do I have a hall of fame yet?"]
 @client.event
 async def on_message(message):
 
@@ -57,10 +64,10 @@ async def on_message(message):
             new_reader = ChanReader(inboard)
             with open(file_path, 'a') as file:
                 file.write(new_reader.parse())
-            boards.append(inboard)
+            boards.append(inboard + ": {}".format(str(datetime.datetime.now())))
         else:
             msg = "Board misspelled or not supported, baka"
-            client.send_message(message.channel, msg)
+            await client.send_message(message.channel, msg)
 
     # Scrape board of choice and clean write text to the bank. Format: "!clean pol"
     elif message.content.startswith('!clean'):
@@ -71,11 +78,11 @@ async def on_message(message):
             boards.clear()
             with open(file_path, 'w') as file:
                 file.write(new_reader.parse())
-            boards.append(inboard)
+            boards.append(inboard + ": {}".format(str(datetime.datetime.now())))
             model.load(file_path)
         else:
             msg = "Board misspelled or not supported, baka"
-            client.send_message(message.channel, msg)
+            await client.send_message(message.channel, msg)
 
     elif message.content.startswith('!list'):
         msg = ', '.join([str(i) for i in boards])

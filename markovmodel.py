@@ -5,7 +5,7 @@ from random import randint, choice
 class MarkovModel:
     """This is the "model" based off of markov processes instead of machine learning."""
 
-    def __init__(self, file_path, length=4):
+    def __init__(self, file_path, length=3):
         self.length = None
         self.words = None
         self.num_words = None
