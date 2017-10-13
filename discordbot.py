@@ -88,4 +88,8 @@ async def on_message(message):
         msg = ', '.join([str(i) for i in boards])
         await client.send_message(message.channel, msg)
 
+    elif message.content.startswith(':chaika:'):
+        msg = ':chaika:'
+        await client.send_message(message.channel, msg)
+
 client.run('token')
