@@ -7,7 +7,7 @@ import datetime
 
 
 file_path = "./textbank.txt"
-boards = ["a: {}".format(str(datetime.datetime.now()))]
+boards = ['a']
 board_choices = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'o', 'pol', 'r9k', 's4s', 's', 'sci', 'x']
 
 reader = ChanReader(boards[0])
@@ -92,4 +92,4 @@ async def on_message(message):
         msg = ':chaika:'
         await client.send_message(message.channel, msg)
 
-client.run('token')
+client.run('MzY1MjExMDcyNjc3OTM3MTUy.DOdujA.GSXMMjsKDkBUi9w1whA9Sz6rCE4')

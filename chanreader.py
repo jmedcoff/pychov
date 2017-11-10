@@ -40,7 +40,7 @@ class ChanReader(WebReader):
                     post_text = post_text_original.replace("<br>", " ")
                     # re.sub(r"<br>", " ", post_text_original)
                     post_text = re.sub(r">>(\d)+", "", post_text)
-                    post_text = re.sub(r"</?(a|span)|(\s+[^>]+)>", "", post_text)
+                    post_text = re.sub(r"</?(a|span)(\s+[^>]+)>", "", post_text)
                     # Split the text into a list separated by spaces to define "words"
                     words = post_text.split(' ')
 
