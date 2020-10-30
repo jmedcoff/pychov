@@ -11,6 +11,7 @@ All posts are made in the channel where the command was invoked.
 * !post - creates a generated post.
 * !add xyz - adds board /xyz/ to the text bank.
 * !clean xyz - empties the text bank and adds board /xyz/ to it.
+* !boom xyz - does a Boomhauer impression using input text xyz
 * !help - displays a succinct description of these commands.
 * !list - lists the boards used to construct the text bank.
 * !goodbot - easter egg command.
