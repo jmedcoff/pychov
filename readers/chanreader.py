@@ -3,7 +3,7 @@ import re
 import html.parser
 # import json
 
-from webreader import WebReader
+from .webreader import WebReader
 
 
 class ChanReader(WebReader):

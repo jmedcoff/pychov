@@ -19,7 +19,7 @@ class MarkovModel:
         self.length = length
         with open(file_path, 'r') as file:
             lines = file.read().lower()
-            self.words = sub("[^\w]", " ", lines).split()
+            self.words = sub(r"[^\w]", " ", lines).split()
         self.num_words = len(self.words)
         self.database = {}
         self.__build_database()
@@ -54,7 +54,7 @@ class MarkovModel:
         seed = randint(0, self.num_words-self.length)
         w = [x for x in self.words[seed:seed+self.length]]
         out = []
-        for i in range(size):
+        for _ in range(size):
             key = tuple(w)
             if key in self.database:
                 next_word = choice(self.database[key])

@@ -1,8 +1,9 @@
 import discord
 import asyncio
 from random import choice
-from markovmodel import MarkovModel
-from chanreader import ChanReader
+from models.markovmodel import MarkovModel
+from readers.chanreader import ChanReader
+from boom.translate import translate
 import datetime
 
 
@@ -13,6 +14,9 @@ board_choices = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'o', 'pol', 'r9k', 's4s', 's
 reader = ChanReader(boards[0])
 client = discord.Client()
 model = MarkovModel(file_path)
+
+with open('token.txt', 'r') as file:
+    token = file.read()
 
 with open(file_path, 'w') as file:
     file.write(reader.parse())
@@ -27,6 +31,7 @@ async def on_ready():
 
 help_msg = "'!post' creates a shitpost. '!help' brings up this dialog. '!add xyz' adds board xyz "
 help_msg += "to the text bank. '!clean xyz' empties the bank and adds board xyz to the bank. "
+help_msg += "'!boom translates the string following into Boomhauer speak. "
 help_msg += "'!list' gives the boards currently in use. See github.com/jorts1114/pychov for details."
 
 meme_msg = ["Thank you. I'm doing my best. ;P", "Hmph. I AM the superior shitposter. >:)",
@@ -45,16 +50,16 @@ async def on_message(message):
 
     # Display a basic help message.
     if message.content.startswith('!help'):
-        await client.send_message(message.channel, help_msg)
+        await message.channel.send(help_msg)
 
     # Extra spicy meme for fun.
     if message.content.startswith('!goodbot'):
-        await client.send_message(message.channel, choice(meme_msg))
+        await message.channel.send(choice(meme_msg))
 
     # Post a randomized shitpost from the markov model.
     elif message.content.startswith('!post'):
         msg = model.generate(20)
-        await client.send_message(message.channel, msg)
+        await message.channel.send(msg)
 
     # Scrape board of choice and add text to the bank. Format: "!add b"
     elif message.content.startswith('!add'):
@@ -67,7 +72,7 @@ async def on_message(message):
             boards.append(inboard + ": {}".format(str(datetime.datetime.now())))
         else:
             msg = "Board misspelled or not supported, baka"
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
     # Scrape board of choice and clean write text to the bank. Format: "!clean pol"
     elif message.content.startswith('!clean'):
@@ -82,14 +87,19 @@ async def on_message(message):
             model.load(file_path)
         else:
             msg = "Board misspelled or not supported, baka"
-            await client.send_message(message.channel, msg)
+            await message.channel.send(msg)
 
     elif message.content.startswith('!list'):
         msg = ', '.join([str(i) for i in boards])
-        await client.send_message(message.channel, msg)
+        await message.channel.send(msg)
 
     elif message.content.startswith(':chaika:'):
         msg = ':chaika:'
-        await client.send_message(message.channel, msg)
+        await message.channel.send(msg)
+    
+    elif message.content.startswith('!boom'):
+        sentence = message.content[5:].strip()
+        msg = translate(sentence, 0.6)
+        await message.channel.send(msg)
 
-client.run('MzY1MjExMDcyNjc3OTM3MTUy.DOdujA.GSXMMjsKDkBUi9w1whA9Sz6rCE4')
+client.run(token)
