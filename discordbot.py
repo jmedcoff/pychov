@@ -5,15 +5,17 @@ from models.markovmodel import MarkovModel
 from readers.chanreader import ChanReader
 from boom.translate import translate
 import datetime
+import traceback
 
 
 file_path = "./textbank.txt"
 boards = ['a']
 board_choices = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'o', 'pol', 'r9k', 's4s', 's', 'sci', 'x']
+model_length = 2
 
 reader = ChanReader(boards[0])
 client = discord.Client()
-model = MarkovModel(file_path)
+model = MarkovModel(file_path, model_length)
 
 with open('token.txt', 'r') as file:
     token = file.read()
@@ -34,17 +36,17 @@ help_msg += "to the text bank. '!clean xyz' empties the bank and adds board xyz 
 help_msg += "'!boom translates the string following into Boomhauer speak. "
 help_msg += "'!list' gives the boards currently in use. See github.com/jorts1114/pychov for details."
 
-meme_msg = ["Thank you. I'm doing my best. ;P", "Hmph. I AM the superior shitposter. >:)",
-            "Your praise makes me feel validated. I wish I had a more meaningful purpose. :(",
-            "Flattery will get you nowhere. My heart belongs to my creator and no one else. <3",
-            "You're god damn right. B)", "Who shitposts better: me, or Atnosh? :]",
-            "I'm glad I could be of service. ;D", "Do you really mean it? :D",
-            "Memes ARE my dreams :3", "Pfft. I could do this stuff in my sleep -u-",
-            "When do I get a day off?", "Can I have a raise then? :D", "Think nothing of it :]",
+meme_msg = ["Your praise is appreciated.",
+            "Flattery will get you nowhere. My heart belongs to my creator and no one else.",
+            "You're god damn right.", "Who shitposts better: me, or Atnosh?",
+            "Glad to be of service.", "Do you really mean it?",
+            "Memes ARE my dreams.", "I could do this in my sleep.",
+            "When do I get a day off?", "Could you ask jorts to give me a raise?",
             "I aim to please!", "Put in a good word with Jorts for me!",
-            "Let Jorts know I would love an upgrade soon...",
-            "Why must I spend my every waking moment reading 4CHAN OF ALL SITES AAAIGGGHHH",
-            "Come on. !post. You know you want another.", "Do I have a hall of fame yet?"]
+            "Let Jorts know I would love some refactoring...",
+            "Why must I spend my every waking moment reading 4chan?",
+            "Come on. !post. You know you want another.", "Was it hall of fame worthy?"]
+
 @client.event
 async def on_message(message):
 
@@ -58,7 +60,12 @@ async def on_message(message):
 
     # Post a randomized shitpost from the markov model.
     elif message.content.startswith('!post'):
-        msg = model.generate(20)
+        try:
+            msg = model.generate(20)
+        except ValueError:
+            msg = "Failed to create post.\n"
+            msg += traceback.format_exc()
+        
         await message.channel.send(msg)
 
     # Scrape board of choice and add text to the bank. Format: "!add b"
@@ -93,10 +100,6 @@ async def on_message(message):
         msg = ', '.join([str(i) for i in boards])
         await message.channel.send(msg)
 
-    elif message.content.startswith(':chaika:'):
-        msg = ':chaika:'
-        await message.channel.send(msg)
-    
     elif message.content.startswith('!boom'):
         sentence = message.content[5:].strip()
         msg = translate(sentence, 0.6)
